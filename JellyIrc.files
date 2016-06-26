@@ -1,0 +1,5 @@
+build.sh
+irc.sublime-project
+irc.sublime-workspace
+irc_client
+main.cc
