@@ -11,7 +11,7 @@
 			"file": "main.cc",
 			"settings":
 			{
-				"buffer_size": 47,
+				"buffer_size": 6015,
 				"line_ending": "Unix"
 			}
 		},
@@ -19,7 +19,7 @@
 			"file": "build.sh",
 			"settings":
 			{
-				"buffer_size": 28,
+				"buffer_size": 64,
 				"line_ending": "Unix"
 			}
 		}
@@ -76,7 +76,7 @@
 	},
 	"expanded_folders":
 	[
-		"/home/matt/work/irc"
+		"/home/matt/work/JellyIrc"
 	],
 	"file_history":
 	[
@@ -96,7 +96,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -110,6 +110,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"gjMemcpy",
 			"n_u64",
 			"Share this",
 			"\\n\\n",
@@ -155,24 +156,25 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 47,
+						"buffer_size": 6015,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								47,
-								47
+								3861,
+								3861
 							]
 						],
 						"settings":
 						{
 							"auto_name": "",
-							"syntax": "Packages/C++/C++.sublime-syntax"
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2175.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -184,15 +186,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 28,
+						"buffer_size": 64,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								28,
-								28
+								0,
+								0
 							]
 						],
 						"settings":
@@ -242,7 +244,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 476.0
+		"height": 253.0
 	},
 	"output.find_results":
 	{
