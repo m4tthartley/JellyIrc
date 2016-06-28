@@ -13,6 +13,51 @@
 // #include <netinet/in.h>
 // #include <fcntl.h>
 
+gjMemStack stringStack = gjInitMemStack(megabytes(1));
+
+class String {
+public:
+	char *mem;
+	int len;
+
+	String& operator=(const char * right) {
+		return *this; // Does nothing
+	}
+
+	// String () {
+	// 	this->mem = NULL;
+	// 	this->len = 0;
+	// }
+
+	// String (char *str) {
+	// 	this->mem = str;
+	// }
+};
+
+String operator+ (String str1, String str2) {
+	char *mem = gjPushMemStack(&stringStack, str1.len + str2.len + 1, true);
+	gjMemcpy(mem, str1.mem, str1.len);
+	gjMemcpy(mem + str1.len, str2.mem, str2.len);
+	String result/* = {}*/;
+	result.mem = mem;
+	result.len = str1.len + str2.len;
+	return result;
+}
+
+String operator+ (String str1, const char *str2) {
+	char *mem = gjPushMemStack(&stringStack, str1.len + gjStrlen(str2) + 1, true);
+	gjMemcpy(mem, str1.mem, str1.len);
+	gjMemcpy(mem + str1.len, (void*)str2, gjStrlen(str2));
+	String result/* = {}*/;
+	result.mem = mem;
+	result.len = str1.len + gjStrlen(str2);
+	return result;
+}
+
+void gjStringPrint (String str) {
+	printf("%s \n", str.mem);
+}
+
 int netStreamConnect (const char *url, const char *port) {
 	addrinfo addressHints = {};
 	addressHints.ai_family = AF_UNSPEC;
@@ -119,38 +164,55 @@ enum ClientCommandType {
 };
 
 struct ClientCommand {
-	ClientCommandType type;
-	union {
-		struct {
-			char *str;
-		} msg;
-		struct {
-			char *msg;
-		} quit;
-		struct {
-			char *channel;
-		} join;
-	};
+	// ClientCommandType type;
+	// union {
+	// 	struct {
+	// 		char *str;
+	// 	} msg;
+	// 	struct {
+	// 		char *msg;
+	// 	} quit;
+	// 	struct {
+	// 		char *channel;
+	// 	} join;
+	// };
+
+	char *msg;
+
+	char *name;
+	char *args[16];
 };
 
 char *getWord (char **str) {
 	char *result = NULL;
 	char *s = *str;
+	bool colonArg = false;
 
 	while (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n') {
 		++s;
 	}
 	if (*s != 0) {
+		if (*s == ':') {
+			colonArg = true;
+			++s;
+		}
 		result = s;
 	}
 
 	int len = 0;
 	if (result) {
-		while (*s != ' ' && *s != '\t' && *s != '\r' && *s != '\n' && *s != 0) {
-			++len;
-			++s;
+		if (colonArg) {
+			while (*s != '\r' && *s != '\n' && *s != 0) {
+				++len;
+				++s;
+			}
+		} else {
+			while (*s != ' ' && *s != '\t' && *s != '\r' && *s != '\n' && *s != 0) {
+				++len;
+				++s;
+			}
 		}
-		// *s = 0;
+		
 		char *mem = gjPushMemStack(&inputMemStack, len+1);
 		gjMemcpy(mem, result, len);
 		mem[len] = 0;
@@ -168,9 +230,18 @@ ClientCommand parseInput (char *input) {
 	char *s = input;
 	if (*s == '/') {
 		++s;
-		char *cmdStr = getWord(&s);
+		command.name = getWord(&s);
 
-		if (gjStrcmp(cmdStr, "quit") == 0) {
+		fiz (15) {
+			char *arg = getWord(&s);
+			if (arg) {
+				command.args[i] = arg;
+			} else {
+				break;
+			}
+		}
+
+		/*if (gjStrcmp(cmdStr, "quit") == 0) {
 			command.type = COMMAND_QUIT;
 			char *msg = getWord(&s);
 			if (msg) {
@@ -184,13 +255,10 @@ ClientCommand parseInput (char *input) {
 			if (channel) {
 				command.join.channel = channel;
 			}
-		}
-
-		printf("command: %s \n\n", cmdStr);
+		}*/
 	} else {
 		printf("msg \n\n");
-		command.type = COMMAND_MSG;
-		command.msg.str = input; // todo: maybe move this into stack memory
+		command.msg = input; // todo: maybe move this into stack memory
 	}
 
 	return command;
@@ -208,7 +276,40 @@ void *clientInputThread (void *arg) {
 		str[size] = 0;
 
 		ClientCommand command = parseInput(str);
-		if (command.type == COMMAND_MSG) {
+		printf("cmd: %s \n", command.name);
+		fiz (15) {
+			if (command.args[i]) {
+				printf("	arg: %s \n", command.args[i]);
+			} else {
+				break;
+			}
+		}
+
+		if (command.msg) {
+			char str[1024];
+			sprintf(str, "%s\r\n", command.msg);
+			netWrite(socket, str);
+		}
+		if (gjEqual(command.name, "quit")) {
+			char str[1024];
+			if (command.args[0]) {
+				sprintf(str, "QUIT :%s\r\n", command.args[0]);
+			} else {
+				sprintf(str, "QUIT\r\n");
+			}
+			netWrite(socket, str);
+		}
+		if (gjEqual(command.name, "join")) {
+			char str[1024];
+			if (command.args[0]) {
+				sprintf(str, "JOIN %s\r\n", command.args[0]);
+				netWrite(socket, str);
+			} else {
+				printf("You must specify a channel name \n\n");
+			}
+		}
+
+		/*if (command.type == COMMAND_MSG) {
 			char str[1024];
 			sprintf(str, "%s\r\n", command.msg.str);
 			netWrite(socket, str);
@@ -230,7 +331,7 @@ void *clientInputThread (void *arg) {
 			} else {
 				printf("You must specify a channel name \n\n");
 			}
-		}
+		}*/
 	}
 
 	return arg;
@@ -288,5 +389,14 @@ void testConnect () {
 int main () {
 	printf("Irc client... \n\n");
 
-	testConnect();
+	// testConnect();
+
+	String zero;
+	zero = "Test";
+	String test;
+	test = "Hello World!";
+
+	String asd = test + " fuck";
+	gjStringPrint(asd);
+	// send("NICK " + nickName + "\r\n");
 }
