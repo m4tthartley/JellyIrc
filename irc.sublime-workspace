@@ -11,7 +11,7 @@
 			"file": "main.cc",
 			"settings":
 			{
-				"buffer_size": 6015,
+				"buffer_size": 8907,
 				"line_ending": "Unix"
 			}
 		},
@@ -19,7 +19,15 @@
 			"file": "build.sh",
 			"settings":
 			{
-				"buffer_size": 64,
+				"buffer_size": 110,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/matt/work/gjLib/gj_lib.h",
+			"settings":
+			{
+				"buffer_size": 3117,
 				"line_ending": "Unix"
 			}
 		}
@@ -80,6 +88,7 @@
 	],
 	"file_history":
 	[
+		"/home/matt/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 		"/home/matt/work/irrlicht/irrlicht-1.8.3/source/Irrlicht/Makefile",
 		"/home/matt/work/irrlicht/irrlicht-1.8.3/source/Irrlicht/aesGladman/sha2.h",
 		"/home/matt/work/irrlicht/irrlicht-1.8.3/source/Irrlicht/aesGladman/sha2.cpp",
@@ -91,8 +100,7 @@
 		"/home/matt/work/slack/jurassicpark.quotes",
 		"/home/matt/work/slack/bsd_sockets_stuff.cc",
 		"/home/matt/work/slack/curl_trace.txt",
-		"/home/matt/.config/sublime-text-3/Packages/User/MyBuild.sublime-build",
-		"/home/matt/.config/sublime-text-3/Packages/User/Preferences.sublime-settings"
+		"/home/matt/.config/sublime-text-3/Packages/User/MyBuild.sublime-build"
 	],
 	"find":
 	{
@@ -156,15 +164,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6015,
+						"buffer_size": 8907,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3861,
-								3861
+								7746,
+								7746
 							]
 						],
 						"settings":
@@ -174,7 +182,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2175.0,
+						"translation.y": 4517.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -186,15 +194,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 64,
+						"buffer_size": 110,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								70,
+								70
 							]
 						],
 						"settings":
@@ -206,6 +214,35 @@
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/matt/work/gjLib/gj_lib.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3117,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1609,
+								1609
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 546.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]

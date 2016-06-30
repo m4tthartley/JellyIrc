@@ -20,42 +20,57 @@ public:
 	char *mem;
 	int len;
 
-	String& operator=(const char * right) {
-		return *this; // Does nothing
+	String () {}
+
+	String (char *str) {
+		this->mem = str; // todo: this doesn't copy
+		this->len = gjStrlen(str);
 	}
-
-	// String () {
-	// 	this->mem = NULL;
-	// 	this->len = 0;
-	// }
-
-	// String (char *str) {
-	// 	this->mem = str;
-	// }
 };
 
-String operator+ (String str1, String str2) {
-	char *mem = gjPushMemStack(&stringStack, str1.len + str2.len + 1, true);
-	gjMemcpy(mem, str1.mem, str1.len);
-	gjMemcpy(mem + str1.len, str2.mem, str2.len);
-	String result/* = {}*/;
-	result.mem = mem;
+String stringConcatOnStack (String str1, String str2) {
+	String result;
 	result.len = str1.len + str2.len;
+	result.mem = gjPushMemStack(&stringStack, result.len + 1, true);
+	gjMemcpy(result.mem, str1.mem, str1.len);
+	gjMemcpy(result.mem + str1.len, str2.mem, str2.len);
 	return result;
 }
 
-String operator+ (String str1, const char *str2) {
-	char *mem = gjPushMemStack(&stringStack, str1.len + gjStrlen(str2) + 1, true);
-	gjMemcpy(mem, str1.mem, str1.len);
-	gjMemcpy(mem + str1.len, (void*)str2, gjStrlen(str2));
-	String result/* = {}*/;
-	result.mem = mem;
-	result.len = str1.len + gjStrlen(str2);
-	return result;
+String operator+ (String str1, String str2) {
+	return stringConcatOnStack(str1, str2);
+}
+
+String operator+ (String str1, char *str2) {
+	String string2 = str2;
+	return stringConcatOnStack(str1, string2);
+}
+
+String operator+ (String str, int num) {
+	char buffer[64];
+	snprintf(buffer, 64, "%i", num);
+	String str2 = buffer;
+	return stringConcatOnStack(str, str2);
+}
+
+void operator+= (String &str1, String str2) {
+	str1 = stringConcatOnStack(str1, str2);
+}
+
+void operator+= (String &str1, char *str2) {
+	String s2 = str2;
+	str1 = stringConcatOnStack(str1, s2);
 }
 
 void gjStringPrint (String str) {
 	printf("%s \n", str.mem);
+}
+
+void stringDebugPrint (String str) {
+	printf("string: {\n");
+	printf("	data: %s\n", str.mem);
+	printf("	length: %i\n", str.len);
+	printf("}\n\n");
 }
 
 int netStreamConnect (const char *url, const char *port) {
@@ -389,14 +404,18 @@ void testConnect () {
 int main () {
 	printf("Irc client... \n\n");
 
-	// testConnect();
+	testConnect();
 
-	String zero;
-	zero = "Test";
-	String test;
-	test = "Hello World!";
+	
 
-	String asd = test + " fuck";
-	gjStringPrint(asd);
-	// send("NICK " + nickName + "\r\n");
+	// String test = (String) "Hello World!" + "...";
+	// String asd = test + " fuck";
+	// stringDebugPrint(test);
+	// stringDebugPrint(asd);
+
+	// String name = (String) "Matt " + "Hartley";
+	// String welcome = (String) "Welcome back to irc, " + name + "! after " + 27 + " days away.";
+	// welcome += (String) "\n" + "How are you? ";
+	// welcome += name;
+	// stringDebugPrint(welcome);
 }
